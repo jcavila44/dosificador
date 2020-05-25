@@ -1,0 +1,6 @@
+D:\Escritorio\PROGRAMACION PROYECTO\Dosificador\Dosificador\bin\Debug\Dosificador.exe.config
+D:\Escritorio\PROGRAMACION PROYECTO\Dosificador\Dosificador\bin\Debug\Dosificador.exe
+D:\Escritorio\PROGRAMACION PROYECTO\Dosificador\Dosificador\bin\Debug\Dosificador.pdb
+D:\Escritorio\PROGRAMACION PROYECTO\Dosificador\Dosificador\obj\Debug\Dosificador.csprojAssemblyReference.cache
+D:\Escritorio\PROGRAMACION PROYECTO\Dosificador\Dosificador\obj\Debug\Dosificador.exe
+D:\Escritorio\PROGRAMACION PROYECTO\Dosificador\Dosificador\obj\Debug\Dosificador.pdb

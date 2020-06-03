@@ -34,7 +34,7 @@ namespace Dosificador
 
             string[] SOLMAACinfo =
             {
-                "SOLMAFI",
+                "SOLMAAC",
                 Row.generateNumber(0000, 9999, true),
                 Row.generateName(),
                 Row.generateLastName(),
@@ -59,7 +59,7 @@ namespace Dosificador
             csv.AppendLine(newLine);
             csv.AppendLine(newLine2);
 
-            string filePath = "../../Documentos/Regados/" + numberFile + ".csv";
+            string filePath = "../../Documentos/Regados/SOLMAAC-" + numberFile + ".csv";
 
             File.AppendAllText(@filePath, csv.ToString());
         }
@@ -101,6 +101,36 @@ namespace Dosificador
 
             int number = Row.generateNumber(0, 17);
             return Asunto[number];
+        }
+
+        public void TransformXMLSOLMAAC(string FileRoute, string nameFile)
+        {
+            var lines = File.ReadAllLines(@FileRoute);
+            string datos;
+            var campos = lines[0].Split(';');
+
+            string[] tagsAperturaArray = new string[campos.Length];
+            string[] tagsCierreArray = new string[campos.Length];
+
+            for (int i = 0; i < campos.Length - 1; i++)
+            {
+                tagsAperturaArray[i] = "<" + campos[i] + ">";
+                tagsCierreArray[i] = "</" + campos[i] + ">";
+
+            }
+
+            datos = "<SOLMAAC>";
+            var info = lines[1].Split(';');
+            for (int j = 0; j < campos.Length - 1; j++)
+            {
+                datos += "\n\t" + tagsAperturaArray[j] + info[j] + tagsCierreArray[j];
+            }
+            datos += "</SOLMAAC>";
+
+            using (StreamWriter w = File.AppendText(@"../../Documentos/XML_SOLMAAC/" + nameFile + ".xml"))
+            {
+                w.WriteLine(datos);
+            }
         }
 
     }

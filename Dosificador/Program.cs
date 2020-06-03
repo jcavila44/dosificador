@@ -8,57 +8,32 @@ namespace Dosificador
 {
     class Program
     {
+            public static SOLCANMAHelper helperSOLCANMA = new SOLCANMAHelper();
+            public static SOLCREESHelper helperSOLCREES = new SOLCREESHelper();
+            public static SOLGRAHelper helperSOLGRA = new SOLGRAHelper();
+            public static SOLIHelper helperSOLI = new SOLIHelper();
+            public static SOLMAACHelper helperSOLMAAC = new SOLMAACHelper();
+            public static SOLMAFIHelper helperSOLMAFI = new SOLMAFIHelper();
+
         static void Main(string[] args)
         {
-            //int timeExecution = 20;
-
-
-
-
-            /*Thread RunWatcher = new Thread(() => Run());
-            RunWatcher.Start();*/
+            Thread RunWatcher = new Thread(() => Run());
+            RunWatcher.Start();
 
             Thread DosificadorThread = new Thread(() => Dosificador());
+            Thread.Sleep(TimeSpan.FromSeconds(3));
             DosificadorThread.Start();
-
-
-
-            //Thread th1 = new Thread(() => moverArchivos("Solicitud_de_Graduacion(SOLGRA)"));
-            //th1.Start();
-            //Thread.Sleep(20);
-            //th1.Abort();
-            //th1.Join();
-
-
-            //Thread th3 = new Thread(() => moverArchivos("Solicitud_de_Matricula_Academica(SOLMAAC)"));
-            //th3.Start();
-            //Thread.Sleep(20);
-            //th3.Abort();
-            //th3.Join();
-
-
-            //Thread th4 = new Thread(() => moverArchivos("Solicitud_de_Matricula_Financiera(SOLMAFI)"));
-            //th4.Start();
-            //Thread.Sleep(20);
-            //th4.Abort();
-            //th4.Join();
         }
 
-        private static void Dosificador()
+        public static void Dosificador()
         {
             int cantDocuments = 100;
             GeneralHelper Row = new GeneralHelper();
 
-            SOLCANMAHelper helperSOLCANMA = new SOLCANMAHelper();
-            SOLCREESHelper helperSOLCREES = new SOLCREESHelper();
-            SOLGRAHelper helperSOLGRA = new SOLGRAHelper();
-            SOLIHelper helperSOLI = new SOLIHelper();
-            SOLMAACHelper helperSOLMAAC = new SOLMAACHelper();
-            SOLMAFIHelper helperSOLMAFI = new SOLMAFIHelper();
 
             for (int i = 1; i <= cantDocuments; i++)
             {
-                int RandomNumber = Row.generateNumber(1, 6);
+                int RandomNumber = Row.generateNumber(1, 7);
                 switch (RandomNumber)
                 {
                     case 1:
@@ -100,8 +75,6 @@ namespace Dosificador
         {
             string args = "../../Documentos/Regados/";
 
-
-            // Create a new FileSystemWatcher and set its properties.
             using (FileSystemWatcher watcher = new FileSystemWatcher())
             {
                 watcher.Path = @args;
@@ -111,24 +84,61 @@ namespace Dosificador
                 
                 watcher.EnableRaisingEvents = true;
 
-                // Wait for the user to quit the program.
                 Console.WriteLine("Press 'q' to quit the sample.");
                 while (Console.Read() != 'q') ;
             }
         }
 
-        // Define the event handlers.
         private static void OnChanged(object source, FileSystemEventArgs e)
         {
-            ReadTypeFile(e.FullPath);
+            Thread.Sleep(TimeSpan.FromSeconds(0.1));
+           ReadTypeFile(e.FullPath, e.Name);
         }
 
 
-    static void ReadTypeFile(string fullpath)
+        static void ReadTypeFile(string fullpath, string nameFile)
         {
+            Console.WriteLine(@fullpath);
             var lines = File.ReadAllLines(@fullpath);
-            var campos = lines[0].Split(';');
-            
+            var campos = lines[1].Split(';');
+            Console.WriteLine(campos[0]);
+            switch (campos[0])
+            {
+                case "SOLMAAC":
+                    helperSOLMAAC.TransformXMLSOLMAAC(@fullpath, nameFile);
+                    File.Delete(@fullpath);
+                    break;
+
+                case "SOLI":
+                    helperSOLI.TransformXMLSOLI(@fullpath, nameFile);
+                    File.Delete(@fullpath);
+                    break;
+
+                case "SOLGRA":
+                    helperSOLGRA.TransformXMLSOLGRA(@fullpath, nameFile);
+                    File.Delete(@fullpath);
+                    break;
+
+                case "SOLCREES":
+                    helperSOLCREES.TransformXMLSOLCREES(@fullpath, nameFile);
+                    File.Delete(@fullpath);
+                    break;
+
+                case "SOLCANMA":
+                    helperSOLCANMA.TransformXMLSOLCANMA(@fullpath, nameFile);
+                    File.Delete(@fullpath);
+                    break;
+
+                case "SOLMAFI":
+                    helperSOLMAFI.TransformXMLSOLMAFI(@fullpath, nameFile);
+                    File.Delete(@fullpath);
+                    break;
+            }
+            for (int i = 0; i < campos.Length - 1; i++)
+            {
+                Console.WriteLine(campos[i]);
+            }
+
         }
 
     static void moverArchivos(string archivo)
@@ -164,15 +174,18 @@ namespace Dosificador
             var columnas = lines[0].Split(';').Length;
             var filas = lines.Length;
             string datos;
-            string[] inputsCanonicos = new string[] { 
-                "cod_solicitud",
-                "cedula",
-                "nombres",
-                "apellidos",
-                "tipo_solicitud",
-                "fecha_solicitud",
-                "estado",
-                "documento_origen"};
+            string[] inputsCanonicos = new string[] {
+                "tipo_solicitud","cod_solicitud","nombres","apellidos","correo","programa",
+                "sede","celular","fecha_solicitud","cedula","jornada","homologacion","semestre",
+                "correo_institucional","asunto","observaciones","cod_asignatura","nom_asignatura",
+                "estadosolmaac","carrera_aspira","puntaje_icfes","colegio_proviene","tipo_ceremonia",
+                "estadosolgra","tipo_identificacion","edad","semestre_Inicio","id_matricula",
+                "valorsemestre","concepto","valores_adicionales","fecha_limite_pago","fecha_inicio_recargo1",
+                "valor_recargo1","fecha_inicio_recargo2","valor_recargo2","fecha_inicio_recargo3","valor_recargo3",
+                "totalApagar_sinrecargo","totalApagar_recargo1","totalApagar_recargo2","totalApagar_recargo3",
+                "documento_origen","estadoSOLMAFI"
+            };
+
             string[] infoPersona = new string[8];
             string nombreArchivoLimpio = nombreArchivo.Split('(', ')')[1];
             listaEnlazadaSimple listCano = new listaEnlazadaSimple();

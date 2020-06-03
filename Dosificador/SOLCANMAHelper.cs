@@ -47,9 +47,39 @@ namespace Dosificador
             csv.AppendLine(newLine);
             csv.AppendLine(newLine2);
 
-            string filePath = "../../Documentos/Regados/" + numberFile + ".csv";
+            string filePath = "../../Documentos/Regados/SOLCANMA-" + numberFile + ".csv";
 
             File.AppendAllText(@filePath, csv.ToString());
+        }
+
+        public void TransformXMLSOLCANMA(string FileRoute, string nameFile)
+        {
+            var lines = File.ReadAllLines(@FileRoute);
+            string datos;
+            var campos = lines[0].Split(';');
+
+            string[] tagsAperturaArray = new string[campos.Length];
+            string[] tagsCierreArray = new string[campos.Length];
+
+            for (int i = 0; i < campos.Length - 1; i++)
+            {
+                tagsAperturaArray[i] = "<" + campos[i] + ">";
+                tagsCierreArray[i] = "</" + campos[i] + ">";
+
+            }
+
+            datos = "<SOLCANMA>";
+            var info = lines[1].Split(';');
+            for (int j = 0; j < campos.Length - 1; j++)
+            {
+                datos += "\n\t" + tagsAperturaArray[j] + info[j] + tagsCierreArray[j];
+            }
+            datos += "</SOLCANMA>";
+
+            using (StreamWriter w = File.AppendText(@"../../Documentos/XML_SOLCANMA/" + nameFile + ".xml"))
+            {
+                w.WriteLine(datos);
+            }
         }
     }
 }

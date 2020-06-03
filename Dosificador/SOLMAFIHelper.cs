@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -84,10 +86,39 @@ namespace Dosificador
             csv.AppendLine(newLine);
             csv.AppendLine(newLine2);
 
-            string filePath = "../../Documentos/Regados/"+ numberFile + ".csv";
+            string filePath = "../../Documentos/Regados/SOLMAFI-" + numberFile + ".csv";
 
             File.AppendAllText(@filePath, csv.ToString());
         }
 
+        public void TransformXMLSOLMAFI(string FileRoute, string nameFile)
+        {
+            var lines = File.ReadAllLines(@FileRoute);
+            string datos;
+            var campos = lines[0].Split(';');
+
+            string[] tagsAperturaArray = new string[campos.Length];
+            string[] tagsCierreArray = new string[campos.Length];
+
+            for (int i = 0; i < campos.Length - 1; i++)
+            {
+                tagsAperturaArray[i] = "<" + campos[i] + ">";
+                tagsCierreArray[i] = "</" + campos[i] + ">";
+
+            }
+
+            datos = "<SOLMAFI>";
+            var info = lines[1].Split(';');
+            for (int j = 0; j < campos.Length - 1; j++)
+            {
+                datos += "\n\t" + tagsAperturaArray[j] + info[j] + tagsCierreArray[j];
+            }
+            datos += "</SOLMAFI>";
+
+            using (StreamWriter w = File.AppendText(@"../../Documentos/XML_SOLMAFI/" + nameFile + ".xml"))
+            {
+                w.WriteLine(datos);
+            }
+        }
     }
 }

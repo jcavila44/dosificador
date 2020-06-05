@@ -18,18 +18,17 @@ namespace Dosificador
                 "cod_solicitud",
                 "nombres",
                 "apellidos",
-                "programa_academico",
-                "num_documento",
+                "programa",
+                "cedula",
                 "celular",
                 "correo_institucional",
-                "correo_personal",
+                "correo",
                 "asunto",
                 "observaciones",
                 "cod_asignatura",
                 "nom_asignatura",
                 "fecha_solicitud",
-                "estado",
-                "cedula",
+                "estadosolmaac",
                 };
 
             string[] SOLMAACinfo =
@@ -49,11 +48,10 @@ namespace Dosificador
                 generateAsignatura(),
                 Row.generateNumber(1, 31, true) + "-" + Row.generateNumber(1, 12, true) + "-2020",
                 Row.generateEstado(),
-                Row.generateNumber(111111111, 999999999, true)
             };
 
             var csv = new StringBuilder();
-            string format = "{0};{1};{2};{3};{4};{5};{6};{7};{8};{9};{10};{11};{12};{13};{14};{15}";
+            string format = "{0};{1};{2};{3};{4};{5};{6};{7};{8};{9};{10};{11};{12};{13};{14}";
             var newLine = string.Format(format, columns);
             var newLine2 = string.Format(format, SOLMAACinfo);
             csv.AppendLine(newLine);
@@ -112,7 +110,7 @@ namespace Dosificador
             string[] tagsAperturaArray = new string[campos.Length];
             string[] tagsCierreArray = new string[campos.Length];
 
-            for (int i = 0; i < campos.Length - 1; i++)
+            for (int i = 0; i < campos.Length; i++)
             {
                 tagsAperturaArray[i] = "<" + campos[i] + ">";
                 tagsCierreArray[i] = "</" + campos[i] + ">";
@@ -121,7 +119,7 @@ namespace Dosificador
 
             datos = "<SOLMAAC>";
             var info = lines[1].Split(';');
-            for (int j = 0; j < campos.Length - 1; j++)
+            for (int j = 0; j < campos.Length; j++)
             {
                 datos += "\n\t" + tagsAperturaArray[j] + info[j] + tagsCierreArray[j];
             }
@@ -132,6 +130,5 @@ namespace Dosificador
                 w.WriteLine(datos);
             }
         }
-
     }
 }

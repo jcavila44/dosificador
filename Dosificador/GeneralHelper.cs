@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Text;
@@ -171,6 +172,56 @@ namespace Dosificador
             Random random = new Random();
             int number = random.Next(MinNumber, MaxNumber);
             return number.ToString();
+        }
+
+        public void TransformCanonicoXML(string FileRoute, string nameFile)
+        {
+            var lines = File.ReadAllLines(@FileRoute);
+            string datos;
+            string[] inputsCanonicos = new string[] {
+                "tipo_solicitud","cod_solicitud","nombres","apellidos","correo","programa",
+                "sede","celular","fecha_solicitud","cedula","jornada","homologacion","semestre",
+                "correo_institucional","asunto","observaciones","cod_asignatura","nom_asignatura",
+                "estadosolmaac","carrera_aspira","puntaje_icfes","colegio_proviene","tipo_ceremonia",
+                "estadosolgra","tipo_identificacion","edad","semestre_Inicio","id_matricula",
+                "valorsemestre","concepto","valores_adicionales","fecha_limite_pago","fecha_inicio_recargo1",
+                "valor_recargo1","fecha_inicio_recargo2","valor_recargo2","fecha_inicio_recargo3","valor_recargo3",
+                "totalApagar_sinrecargo","totalApagar_recargo1","totalApagar_recargo2","totalApagar_recargo3",
+                "documento_origen","estadoSOLMAFI",
+            };
+
+            string[] tagsAperturaArray = new string[inputsCanonicos.Length];
+            string[] tagsCierreArray = new string[inputsCanonicos.Length];
+
+            for (int i = 0; i < inputsCanonicos.Length - 1; i++)
+            {
+                tagsAperturaArray[i] = "<" + inputsCanonicos[i] + ">";
+                tagsCierreArray[i] = "</" + inputsCanonicos[i] + ">";
+
+            }
+
+            datos = "<CANONICO>";
+            var campos = lines[0].Split(';');
+            var info = lines[1].Split(';');
+            Console.WriteLine(inputsCanonicos.Length);
+            for (int j = 0; j < inputsCanonicos.Length; j++)
+            {
+                datos += "\n\t" + tagsAperturaArray[j];
+                for (int i = 0; i < campos.Length; i++)
+                {
+                    if (inputsCanonicos[j] == campos[i])
+                    {
+                        datos += info[i];
+                    }
+                }
+                datos += tagsCierreArray[j];
+            }
+            datos += "\n\t</CANONICO>";
+
+            using (StreamWriter w = File.AppendText(@"../../Documentos/XMLCanonicoRegados/Canonico-" + nameFile + ".xml"))
+            {
+                w.WriteLine(datos);
+            }
         }
     }
 }

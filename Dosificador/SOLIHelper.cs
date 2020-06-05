@@ -16,8 +16,8 @@ namespace Dosificador
             string[] columns = {
                 "tipo_solicitud",
                 "cod_solicitud",
-                "Nombres",
-                "Apellidos",
+                "nombres",
+                "apellidos",
                 "sede",
                 "carrera_aspira",
                 "puntaje_icfes",

@@ -20,10 +20,10 @@ namespace Dosificador
                 "nombres",
                 "apellidos",
                 "sede",
-                "carrera", 
+                "programa", 
                 "celular",
                 "correo",
-                "estado",
+                "estadosolgra",
                 "fecha_solicitud",
                 "cedula"
             };

@@ -20,8 +20,8 @@ namespace Dosificador
                 "cod_solicitud",
                 "nombres",
                 "apellidos",
-                "semestre",
                 "jornada",
+                "semestre",
                 "valorsemestre",
                 "concepto",
                 "valores_adicionales",
@@ -36,10 +36,8 @@ namespace Dosificador
                 "totalApagar_recargo1",
                 "totalApagar_recargo2",
                 "totalApagar_recargo3",
-                "tipo_solicitud",
-                "documento_origen",
                 "fecha_solicitud",
-                "estado",
+                "estadoSOLMAFI",
                 "cedula",
             };
 
@@ -58,8 +56,8 @@ namespace Dosificador
                 Row.generateNumber(0000, 9999, true),
                 Row.generateName(),
                 Row.generateLastName(),
-                Row.generateNumber(1, 12, true),
                 Row.generateJornada(),
+                Row.generateNumber(1, 12, true),
                 Row.generateNumber(1000000, 4200000, true),
                 "Valor Semestre",
                 Row.generateNumber(20000, 90000, true),
@@ -100,7 +98,7 @@ namespace Dosificador
             string[] tagsAperturaArray = new string[campos.Length];
             string[] tagsCierreArray = new string[campos.Length];
 
-            for (int i = 0; i < campos.Length - 1; i++)
+            for (int i = 0; i < campos.Length; i++)
             {
                 tagsAperturaArray[i] = "<" + campos[i] + ">";
                 tagsCierreArray[i] = "</" + campos[i] + ">";
@@ -109,11 +107,11 @@ namespace Dosificador
 
             datos = "<SOLMAFI>";
             var info = lines[1].Split(';');
-            for (int j = 0; j < campos.Length - 1; j++)
+            for (int j = 0; j < campos.Length; j++)
             {
                 datos += "\n\t" + tagsAperturaArray[j] + info[j] + tagsCierreArray[j];
             }
-            datos += "</SOLMAFI>";
+            datos += "\n\t</SOLMAFI>";
 
             using (StreamWriter w = File.AppendText(@"../../Documentos/XML_SOLMAFI/" + nameFile + ".xml"))
             {

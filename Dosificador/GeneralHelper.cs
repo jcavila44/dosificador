@@ -174,7 +174,7 @@ namespace Dosificador
             return number.ToString();
         }
 
-        public void TransformCanonicoXML(string FileRoute, string nameFile)
+        public string[] TransformCanonicoXML(string FileRoute, string nameFile)
         {
             var lines = File.ReadAllLines(@FileRoute);
             string datos;
@@ -203,7 +203,6 @@ namespace Dosificador
             datos = "<CANONICO>";
             var campos = lines[0].Split(';');
             var info = lines[1].Split(';');
-            Console.WriteLine(inputsCanonicos.Length);
             for (int j = 0; j < inputsCanonicos.Length; j++)
             {
                 datos += "\n\t" + tagsAperturaArray[j];
@@ -217,11 +216,16 @@ namespace Dosificador
                 datos += tagsCierreArray[j];
             }
             datos += "\n\t</CANONICO>";
+            string[] InfoFile = { 
+                "../../Documentos/XMLCanonicoRegados/Canonico-" + nameFile + ".xml", 
+                "Canonico-"+nameFile+".xml" 
+            };
 
-            using (StreamWriter w = File.AppendText(@"../../Documentos/XMLCanonicoRegados/Canonico-" + nameFile + ".xml"))
+            using (StreamWriter w = File.AppendText(@InfoFile[0]))
             {
                 w.WriteLine(datos);
             }
+            return InfoFile;
         }
     }
 }
